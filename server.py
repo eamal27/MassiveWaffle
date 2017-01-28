@@ -16,7 +16,7 @@ cache = Cache(app, config={'CACHE_TYPE': 'simple'})
 
 sid = SentimentIntensityAnalyzer()
 
-CACHE_TIMEOUT = 60  # Seconds
+CACHE_TIMEOUT = 300  # Seconds
 
 
 @app.route('/reddit/<submission_id>')
