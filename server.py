@@ -27,8 +27,22 @@ def score_reddit(submission_id):
 @app.route('/hn/<page_id>')
 def score_hn(page_id):
     page = hn.get_item(page_id)
-    scores = [score_sentence(hn.get_item(x).text) for x in page.kids if page.kids is not None]
+    comment_ids = []
+    score = 0
+    if page.kids is not None:
+        comments = get_hn_comments(page.kids)
+        scores = [score_sentence(x) for x in comments]
+        score = avg(scores)
     return jsonify(id=page_id, score=avg(scores))
+
+def get_hn_comments(kid_ids):
+    kids = [hn.get_item(x) for x in kid_ids]
+    comments = []
+    for kid in kids:
+        comments.append(kid.text)
+        if kid.kids is not None:
+            comments.extend(get_hn_comments(kid.kids))
+    return comments
 
 
 def score_sentence(sentence):
@@ -43,5 +57,5 @@ def avg(scores):
 
 
 if __name__ == "__main__":
-    x = score_reddit('5qntvs')
+    x = score_hn('13508038')
     print(x)
