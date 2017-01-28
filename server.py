@@ -27,7 +27,7 @@ def score_reddit(submission_id):
 @app.route('/hn/<page_id>')
 def score_hn(page_id):
     page = hn.get_item(page_id)
-    scores = [score_sentence(hn.get_item(x).text) for x in page.kids]
+    scores = [score_sentence(hn.get_item(x).text) for x in page.kids if page.kids is not None]
     return jsonify(id=page_id, score=avg(scores))
 
 
