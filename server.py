@@ -1,13 +1,12 @@
 from flask import Flask, jsonify
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 import praw
-from hackernews import HackerNews
+from bs4 import BeautifulSoup
+from urllib.request import urlopen
 
 reddit = praw.Reddit(client_id='KKt5S-SgmLgf4g',
                      client_secret='B8FpLDncJ5fv1FfKhxDBKDyiTD4',
                      user_agent='web:com.caleb.massivewaffle:v1.0.0')
-
-hn = HackerNews()
 
 
 app = Flask(__name__)
@@ -26,24 +25,12 @@ def score_reddit(submission_id):
 
 @app.route('/hn/<page_id>')
 def score_hn(page_id):
-    page = hn.get_item(page_id)
-    comment_ids = []
-    score=0
-    if page.kids is not None:
-        comments = get_hn_comments(page.kids)
-        scores = [score_sentence(x) for x in comments]
-        score = avg(scores)
-    return jsonify(id=page_id, score=score)
-
-def get_hn_comments(kid_ids):
-    kids = [hn.get_item(x) for x in kid_ids]
-    comments = []
-    for kid in kids:
-        comments.append(kid.text)
-        if kid.kids is not None:
-            comments.extend(get_hn_comments(kid.kids))
-    return comments
-
+    url = 'https://news.ycombinator.com/item?id=' + page_id
+    page = urlopen(url).read()
+    soup = BeautifulSoup(page, 'html.parser')
+    comment_divs = soup.findAll("div", { "class" : "comment" })
+    scores = [score_sentence(div.text) for div in comment_divs]
+    return jsonify(id=page_id, score=avg(scores))
 
 def score_sentence(sentence):
     if sentence is None: 
@@ -57,5 +44,5 @@ def avg(scores):
 
 
 if __name__ == "__main__":
-    x = score_hn('13508038')
+    x = score_hn('13506670')
     print(x)
