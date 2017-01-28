@@ -1,0 +1,10 @@
+# bin/post_compile
+#!/usr/bin/env bash
+
+if [ -f bin/install_nltk_data ]; then
+    echo "-----> Running get_vader"
+    chmod +x bin/get_vader
+    bin/get_vader
+fi
+
+echo "-----> Post-compile done"
