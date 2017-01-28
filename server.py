@@ -14,18 +14,21 @@ app = Flask(__name__)
 
 sid = SentimentIntensityAnalyzer()
 
-@app.route('/reddit/<id>')
+
+@app.route('/reddit/<submission_id>')
 def score_reddit(submission_id):
     submission = reddit.submission(id=submission_id)
     comments = [c.body for c in submission.comments.list()]
     scores = [score_sentence(comment) for comment in comments]
     return avg(scores)
 
-@app.route('/hn/<id>')
+
+@app.route('/hn/<page_id>')
 def score_hn(page_id):
     page = hn.get_item(page_id)
     scores = [score_sentence(hn.get_item(x).text) for x in page.kids]
     return avg(scores)
+
 
 def score_sentence(sentence):
     if sentence is None: 
@@ -33,8 +36,10 @@ def score_sentence(sentence):
     scores = sid.polarity_scores(sentence)
     return scores['compound']
 
+
 def avg(scores):
     return sum(scores)/len(scores)
+
 
 if __name__ == "__main__":
     x = score_hn('13506670')
