@@ -1,19 +1,16 @@
 # bin/install_nltk_data
 #!/usr/bin/env bash
 
-source $BIN_DIR/utils
+#source $BIN_DIR/utils
 
 echo "-----> Starting nltk data installation"
 
-python -m nltk.downloader vader_lexicon
-
-# If using Textblob, use this instead:
-# python -m textblob.download_corpora lite
+python3 -m nltk.downloader vader_lexicon
 
 # Open the NLTK_DATA directory
 cd ${NLTK_DATA}
 
 # Delete all of the zip files
-find . -name "*.zip" -type f -delete
+#find . -name "*.zip" -type f -delete
 
 echo "-----> Finished nltk data installation"
