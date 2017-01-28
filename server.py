@@ -18,6 +18,7 @@ sid = SentimentIntensityAnalyzer()
 @app.route('/reddit/<submission_id>')
 def score_reddit(submission_id):
     submission = reddit.submission(id=submission_id)
+    submission.comments.replace_more(limit=16, threshold=10)
     comments = [c.body for c in submission.comments.list()]
     scores = [score_sentence(comment) for comment in comments]
     return jsonify(id=submission_id, score=avg(scores))
@@ -42,5 +43,5 @@ def avg(scores):
 
 
 if __name__ == "__main__":
-    x = score_reddit('5qpen3')
+    x = score_reddit('5qntvs')
     print(x)
