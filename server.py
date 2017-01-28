@@ -1,4 +1,5 @@
 from flask import Flask, jsonify
+from flask_cache import Cache
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 import praw
 from bs4 import BeautifulSoup
@@ -11,10 +12,15 @@ reddit = praw.Reddit(client_id='KKt5S-SgmLgf4g',
 
 app = Flask(__name__)
 
+cache = Cache(app,config={'CACHE_TYPE': 'simple'})
+
 sid = SentimentIntensityAnalyzer()
+
+CACHE_TIMEOUT=60 # Seconds
 
 
 @app.route('/reddit/<submission_id>')
+@cache.cached(timeout=CACHE_TIMEOUT)
 def score_reddit(submission_id):
     submission = reddit.submission(id=submission_id)
     submission.comments.replace_more(limit=16, threshold=10)
@@ -24,6 +30,7 @@ def score_reddit(submission_id):
 
 
 @app.route('/hn/<page_id>')
+@cache.cached(timeout=CACHE_TIMEOUT)
 def score_hn(page_id):
     url = 'https://news.ycombinator.com/item?id=' + page_id
     page = urlopen(url).read()
