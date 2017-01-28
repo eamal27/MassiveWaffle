@@ -12,11 +12,11 @@ reddit = praw.Reddit(client_id='KKt5S-SgmLgf4g',
 
 app = Flask(__name__)
 
-cache = Cache(app,config={'CACHE_TYPE': 'simple'})
+cache = Cache(app, config={'CACHE_TYPE': 'simple'})
 
 sid = SentimentIntensityAnalyzer()
 
-CACHE_TIMEOUT=60 # Seconds
+CACHE_TIMEOUT = 60  # Seconds
 
 
 @app.route('/reddit/<submission_id>')
@@ -35,9 +35,10 @@ def score_hn(page_id):
     url = 'https://news.ycombinator.com/item?id=' + page_id
     page = urlopen(url).read()
     soup = BeautifulSoup(page, 'html.parser')
-    comment_divs = soup.findAll("div", { "class" : "comment" })
+    comment_divs = soup.findAll("div", {"class": "comment"})
     scores = [score_sentence(div.text) for div in comment_divs]
     return jsonify(id=page_id, score=avg(scores))
+
 
 def score_sentence(sentence):
     if sentence is None: 
@@ -47,7 +48,10 @@ def score_sentence(sentence):
 
 
 def avg(scores):
-    return sum(scores)/len(scores)
+    try:
+        return sum(scores)/len(scores)
+    except ZeroDivisionError:
+        return 0
 
 
 if __name__ == "__main__":
