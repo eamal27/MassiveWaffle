@@ -28,12 +28,12 @@ def score_reddit(submission_id):
 def score_hn(page_id):
     page = hn.get_item(page_id)
     comment_ids = []
-    score = 0
+    score=0
     if page.kids is not None:
         comments = get_hn_comments(page.kids)
         scores = [score_sentence(x) for x in comments]
         score = avg(scores)
-    return jsonify(id=page_id, score=avg(scores))
+    return jsonify(id=page_id, score=score)
 
 def get_hn_comments(kid_ids):
     kids = [hn.get_item(x) for x in kid_ids]
