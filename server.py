@@ -12,6 +12,8 @@ reddit = praw.Reddit(client_id='KKt5S-SgmLgf4g',
 
 app = Flask(__name__)
 
+app.config['DEBUG'] = True
+
 cache = Cache(app, config={'CACHE_TYPE': 'simple'})
 
 sid = SentimentIntensityAnalyzer()
