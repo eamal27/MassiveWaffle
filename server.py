@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from flask_cache import Cache
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 import praw
@@ -27,6 +27,13 @@ def score_reddit(submission_id):
     comments = [c.body for c in submission.comments.list()]
     scores = [score_sentence(comment) for comment in comments]
     return jsonify(id=submission_id, score=avg(scores))
+
+
+@app.route('/reddit/score_comment', methods=['POST'])
+def score_reddit_comment():
+    comment = request.form.get('comment', '')
+    score = score_sentence(comment)
+    return jsonify(score=score)
 
 
 @app.route('/hn/<page_id>')
