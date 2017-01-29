@@ -31,8 +31,8 @@ def score_reddit(submission_id):
     return jsonify(id=submission_id, score=avg(scores))
 
 
-@app.route('/reddit/score_comment', methods=['POST'])
-def score_reddit_comment():
+@app.route('/score_comment', methods=['POST'])
+def score_comment():
     comment = request.form.get('comment', '')
     score = score_sentence(comment)
     return jsonify(score=score)
