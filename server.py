@@ -25,7 +25,7 @@ CACHE_TIMEOUT = 300  # Seconds
 @cache.cached(timeout=CACHE_TIMEOUT)
 def score_reddit(submission_id):
     submission = reddit.submission(id=submission_id)
-    submission.comments.replace_more(limit=16, threshold=10)
+    submission.comments.replace_more(limit=2, threshold=10)
     comments = [c.body for c in submission.comments.list()]
     scores = [score_sentence(comment) for comment in comments]
     return jsonify(id=submission_id, score=avg(scores))
