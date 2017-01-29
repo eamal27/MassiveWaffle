@@ -32,7 +32,6 @@ def score_reddit(submission_id):
 
 
 @app.route('/score_comment', methods=['POST'])
-@cache.cached(timeout=3600)
 def score_comment():
     comment = request.form.get('comment', '')
     score = score_sentence(comment)
