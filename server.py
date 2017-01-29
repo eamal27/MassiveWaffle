@@ -36,7 +36,7 @@ def score_reddit(submission_id):
 def score_comment():
     comment = request.form.get('comment', '')
     score = score_sentence(comment)
-    return jsonify(score=score)
+    return jsonify(score=score, comment=comment)
 
 
 @app.route('/hn/<page_id>')
