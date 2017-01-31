@@ -62,6 +62,9 @@ def avg(scores):
     except ZeroDivisionError:
         return 0
 
+@app.route('/isAlive', methods=['GET'])
+def is_alive():
+    return 'Hello world'
 
 if __name__ == "__main__":
     x = score_hn('13506670')
